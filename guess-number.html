@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <!--<link rel="icon" href="../../favicon.ico">-->
+
+  <title>Guess number</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <!--<link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">-->
+
+  <!-- Custom styles for this template -->
+  <link href="stylesheets/dashboard.css" rel="stylesheet">
+
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+  <!--<script src="../../assets/js/ie-emulation-modes-warning.js"></script>-->
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="btn-group btn-group-justified">
+          <a id="start" type="button" class="btn btn-default">開始</a>
+          <a id="restart" type="button" class="btn btn-default">放棄重來</a>
+          <a id="cheat" type="button" class="btn btn-default">看答案</a>
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon" id="sizing-addon1">猜答案</span>
+          <input id="userGuess" type="text" name="" class="form-control" value="" required="required" maxlength="4">
+          <span class="input-group-btn">
+            <a id="guess" type="button" class="btn btn-default">猜!</a>
+          </span>
+        </div>
+        <br>
+        <ul id="guessResults" class="list-group">
+          <!-- <li class="list-group-item">
+            <span class="label label-danger">0A1B</span>
+            
+            1234
+          </li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    var random_num_answer = String();
+    var guess_num;
+    var _user = [];
+    var guess_answer = [];
+    var _A;
+    var _B;
+    var start = document.getElementById('start');
+    var guess = document.getElementById('guess'); // 猜的按鈕
+    var cheat = document.getElementById('cheat'); // 答案
+    var userGuess = document.getElementById('userGuess'); //input
+    var guessResults = document.getElementById('guessResults'); //顯示猜的結果
+
+
+    start.onclick = function () {
+      var ans = String();
+      while (ans.length < 4) {
+        let num = (Math.floor(Math.random() * 9)).toString();
+        if (!ans.includes(num)) { ans += num; }
+        random_num_answer = ans;
+      }
+    }
+
+    guess.addEventListener('click', function () {
+      _A = 0;
+      _B = 0;
+      guess_answer = [];
+      _user = [];
+      for (let num of random_num_answer) {
+        if (userGuess.value.includes(num)) { guess_answer.push(num); }
+      }
+
+      guess_answer.forEach(item => {
+        if (random_num_answer.indexOf(item) == userGuess.value.indexOf(item)) {
+          _A++;
+        }
+        else { _B++; }
+      })
+
+
+      for (let num of userGuess.value) {
+        _user.push(num);
+      }
+      var repeat = new Set();
+      var result = new Set();
+      _user.forEach(item => {
+        result.has(item) ? repeat.add(item) : result.add(item);
+      })
+
+
+      if (repeat.size >= 1) {
+        alert('不可以輸入重複數字');
+      }
+      else if (_A == 4) {
+        guessResults.innerHTML +=
+          `<li class="list-group-item">
+        <span class="label label-success">${_A}A${_B}B</span>
+        ${userGuess.value}</li>`;
+        alert('恭喜你贏了!!');
+      }
+      else {
+        guessResults.innerHTML +=
+          `<li class="list-group-item">
+        <span class="label label-danger">${_A}A${_B}B</span>
+        ${userGuess.value}</li>`;
+      }
+    })
+
+
+    cheat.addEventListener('click', function () {
+      alert(`答案是 : ${random_num_answer}`);
+    })
+
+  </script>
+
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <!--<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>-->
+
+  <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+  <!--<script src="../../assets/js/vendor/holder.min.js"></script>-->
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <!--<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
+  <script>
+  </script>
+</body>
+
+</html>
