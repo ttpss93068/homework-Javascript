@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+    <style>
+        #phone img {
+            width: 300px;
+        }
+        #price h2{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .color button,
+        .storage button {
+            margin: 5px 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container d-flex justify-content-center">
+        <div class="row">
+            <div class="col-12">
+                <div id="phone">
+                    <img src="https://bs2020-01.azurewebsites.net/Fake-Apple/img/iphone11-select-2019-family.png"
+                        alt="">
+                </div>
+                <div class="color text-center">
+                    <button class="btn_color" onclick="yellow()">
+                        yellow
+                    </button>
+                    <button class="btn_color" onclick="black()">
+                        black
+                    </button>
+                    <button class="btn_color" onclick="White()">
+                        White
+                    </button>
+                    <button class="btn_color" onclick="red()">
+                        red
+                    </button>
+                </div>
+                <div class="storage text-center">
+                    <button class="btn_storage" onclick="G_64()">
+                        64G
+                    </button>
+                    <button class="btn_storage" onclick="G_128()">
+                        128G
+                    </button>
+                    <button class="btn_storage" onclick="G_256()">
+                        256G
+                    </button>
+                </div>
+                <h3 class="text-center">
+                    價格試算 :
+                </h3>
+                <div id="price">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        //iPhone, iPad, Mac, Watch
+        var products = {
+            iphone: {
+                red: { id: 'p01', color: '紅', url: '/iPhone img/iphone11-red-select-2019.png' },
+                black: { id: 'p02', color: '黑', url: '/iPhone img/iphone11-black-select-2019.png' },
+                yellow: { id: 'p03', color: '黃', url: '/iPhone img/iphone11-yellow-select-2019.png' },
+                White: { id: 'p03', color: '黃', url: '/iPhone img/iphone11-White-select-2019.png' }
+            },
+            storage: [
+              {size:'64G', price: 25000},
+              {size:'128G', price: 27000},  
+              {size:'256G', price: 28000},  
+            ]
+        };
+
+        var btn_color = document.querySelectorAll('.btn_color');
+        var btn_storage = document.querySelectorAll('.btn_storage');
+        var phone = document.getElementById('phone');
+        var price = document.getElementById('price');
+        var h2 = document.createElement('h2');
+        price.appendChild(h2);
+        
+        function red(){
+            phone.innerHTML = `<img src="${products.iphone.red.url}" alt="">`;
+        }
+        function black(){
+            phone.innerHTML = `<img src="${products.iphone.black.url}" alt="">`;
+        }
+        function yellow(){
+            phone.innerHTML = `<img src="${products.iphone.yellow.url}" alt="">`;
+        }
+        function White(){
+            phone.innerHTML = `<img src="${products.iphone.White.url}" alt="">`;
+        }
+
+        function G_64(){
+            h2.innerHTML = `$${products.storage[0].price}`;
+        }
+        function G_128(){
+            h2.innerHTML = `$${products.storage[1].price}`;
+        }
+        function G_256(){
+            h2.innerHTML = `$${products.storage[2].price}`;
+        }
+
+
+        
+
+
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
