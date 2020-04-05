@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calculator {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid black;
+            padding: 3px;
+            background-color: lightsalmon;
+        }
+
+        .input {
+            width: 240px;
+            margin: 10px 8px;
+            font-size: 25px;
+            height: 50px;
+            border: 1px solid gray;
+        }
+
+        button {
+            width: 50px;
+            height: 50px;
+            font-size: 22px;
+            margin: 2px 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row calculator">
+            <input class="input" id="input">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><button class="btn_delete">C</button></td>
+                        <td><button class="btn_delete">Del</button></td>
+                        <td><button class="btn_symbol">/</button></td>
+                        <td><button class="btn_symbol">*</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="btn_num">7</button></td>
+                        <td><button class="btn_num">8</button></td>
+                        <td><button class="btn_num">9</button></td>
+                        <td><button class="btn_symbol">-</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="btn_num">4</button></td>
+                        <td><button class="btn_num">5</button></td>
+                        <td><button class="btn_num">6</button></td>
+                        <td><button class="btn_symbol">+</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="btn_num">1</button></td>
+                        <td><button class="btn_num">2</button></td>
+                        <td><button class="btn_num">3</button></td>
+                        <td rowspan="2"><button class="btn_equal" style="height:110px">=</button></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2"><button class="btn_num" style="width: 112px;">0</button></td>
+                        <td><button class="btn_dot">.</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        var num = '';
+        var symbol;
+        var input = document.getElementById('input');
+        var btn_num = document.querySelectorAll('.btn_num');
+        var btn_symbol = document.querySelectorAll('.btn_symbol');
+        var btn_delete = document.querySelectorAll('.btn_delete');
+        var btn_dot = document.querySelector('.btn_dot');
+        var btn_equal = document.querySelector('.btn_equal');
+
+        // 小數點
+        btn_dot.onclick = function () {
+            var str = String();
+            str = input.value;
+            console.log(str);
+            if (input.value == '' && !str.includes('.')) {
+                input.value += '0.';
+            }
+            else if(!str.includes('.')){
+                input.value += '.';
+            }
+        }
+
+        // 計算
+        btn_equal.onclick = function () {
+            if (num[0] == symbol) {
+                num = num.substring(1, num.length);
+            }
+            num += symbol + input.value;
+            input.value = eval(num);
+
+        }
+
+        // 清除
+        btn_delete.forEach(item => {
+            item.onclick = function () {
+                if (item.innerHTML == 'Del') {
+                    input.value = input.value.substring(0, input.value.length - 1);
+                }
+                if (item.innerHTML == 'C') {
+                    input.value = '';
+                    num = '';
+                }
+            }
+        })
+
+        // 加減運算
+        btn_symbol.forEach(item => {
+            item.onclick = function () {
+                symbol = item.innerHTML;
+                var x = input.value.length
+                if (input.value != '') {
+                    num += item.innerHTML + input.value;
+                }
+                input.value = ''
+            }
+        })
+
+        // 數字鍵盤
+        btn_num.forEach(item => {
+            item.onclick = function () {
+                if (input.value == '' && item.innerHTML == '0') {
+                    input.value == '';
+                }
+                else {
+                    input.value = input.value + item.innerHTML;
+                }
+            }
+        })
+
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
