@@ -36,9 +36,10 @@
             background-color: lightsalmon;
         }
 
+
         .input {
             width: 240px;
-            margin: 10px 8px;
+            margin: 0 8px 10px;
             font-size: 25px;
             height: 50px;
             border: 1px solid gray;
@@ -57,6 +58,10 @@
 
     <div class="container">
         <div class="row calculator">
+            <div id="record">
+                <p>歷史紀錄 : </p>
+                
+            </div>
             <input class="input" id="input">
             <table>
                 <tbody>
@@ -99,11 +104,16 @@
         var calculator = [];
         var symbol;
         var input = document.getElementById('input');
+        var record = document.getElementById('record');
+
         var btn_num = document.querySelectorAll('.btn_num');
         var btn_symbol = document.querySelectorAll('.btn_symbol');
         var btn_delete = document.querySelectorAll('.btn_delete');
         var btn_dot = document.querySelector('.btn_dot');
         var btn_equal = document.querySelector('.btn_equal');
+        var p = document.createElement('p');
+        record.appendChild(p);
+        
 
         // 小數點
         btn_dot.onclick = function () {
@@ -135,13 +145,13 @@
 
             if (input.value != '' ) {
                 calculator.push(input.value);
-                input.value = '';
                 if (calculator[calculator.length - 1] == symbol) {
                     calculator.pop();
                 }
                 for (let i = 0; i < calculator.length; i++) {
                     num += calculator[i];
                 }
+                p.innerHTML = num;
                 input.value = eval(num);
                 calculator = [];
                 num = '';
@@ -153,6 +163,7 @@
                 for (let i = 0; i < calculator.length; i++) {
                     num += calculator[i];
                 }
+                p.innerHTML = num;              
                 input.value = eval(num);
                 calculator = [];
                 num = '';
@@ -169,6 +180,8 @@
                 if (item.innerHTML == 'C') {
                     input.value = '';
                     num = '';
+                    calculator = [];
+                    p.innerHTML = input.value;
                 }
             }
         })
@@ -188,7 +201,18 @@
                 //     symbol.push(item.innerHTML);
                 // }
                 // input.value = ''
+                
+                // if(item.innerHTML == '(' || item.innerHTML == ')'){
+                //     calculator.push(item.innerHTML);
+                //     p.innerHTML += item.innerHTML;
+                // }
 
+                // else if(item.innerHTML == ')' && input.value != ''){
+                //     calculator.push(input.value);
+                //     calculator.push(item.innerHTML);
+                //     p.innerHTML += input.value + item.innerHTML ;
+                // }
+                
                 if (input.value != '') {
                     symbol = item.innerHTML;
                     calculator.push(input.value);
@@ -202,8 +226,11 @@
         // 數字鍵盤
         btn_num.forEach(item => {
             item.onclick = function () {
+                if(input.value[0] == "0"){
+                    input.value = '';
+                }
                 if (input.value == '' && item.innerHTML == '0') {
-                    input.value == '';
+                    input.value = '';
                 }
                 else {
                     input.value = input.value + item.innerHTML;
