@@ -96,6 +96,7 @@
 
     <script>
         var num = '';
+        var calculator = [];
         var symbol;
         var input = document.getElementById('input');
         var btn_num = document.querySelectorAll('.btn_num');
@@ -119,11 +120,43 @@
 
         // 計算
         btn_equal.onclick = function () {
-            if (num[0] == symbol) {
-                num = num.substring(1, num.length);
+
+            // if (num[0] == symbol) {
+            //     num = num.substring(1, num.length);
+            // }
+            // num += symbol + input.value;
+            // input.value = eval(num);
+
+            // for(let i = 0; i < symbol.length; i++){
+            //     calculator = '';
+            //     if(num.length > symbol.length){
+            //         calculator += num[i] + symbol[i];
+            //     }
+
+            if (input.value != '' ) {
+                calculator.push(input.value);
+                input.value = '';
+                if (calculator[calculator.length - 1] == symbol) {
+                    calculator.pop();
+                }
+                for (let i = 0; i < calculator.length; i++) {
+                    num += calculator[i];
+                }
+                input.value = eval(num);
+                calculator = [];
+                num = '';
             }
-            num += symbol + input.value;
-            input.value = eval(num);
+            else if(input.value == ''){
+                if (calculator[calculator.length - 1] == symbol) {
+                    calculator.pop();
+                }
+                for (let i = 0; i < calculator.length; i++) {
+                    num += calculator[i];
+                }
+                input.value = eval(num);
+                calculator = [];
+                num = '';
+            }
 
         }
 
@@ -143,12 +176,26 @@
         // 加減運算
         btn_symbol.forEach(item => {
             item.onclick = function () {
-                symbol = item.innerHTML;
-                var x = input.value.length
+                // symbol = item.innerHTML;
+                // var x = input.value.length
+                // if (input.value != '') {
+                //     num += item.innerHTML + input.value;
+                // }
+                // input.value = ''
+
+                // if (input.value != '') {
+                //     num.push(input.value);
+                //     symbol.push(item.innerHTML);
+                // }
+                // input.value = ''
+
                 if (input.value != '') {
-                    num += item.innerHTML + input.value;
+                    symbol = item.innerHTML;
+                    calculator.push(input.value);
+                    calculator.push(symbol);
                 }
                 input.value = ''
+
             }
         })
 
