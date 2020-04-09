@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/TaiwanAddress.json"></script>
+
+    <style>
+        #msg td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Taiwan Address / Zip Code</h1>
+    <div id="msg"></div>
+
+
+    <template id="templateRow">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </template>
+
+    <script>
+
+        var table = document.createElement('table');
+        var tbody = document.createElement('tbody');
+
+        var msg = document.getElementById('msg');
+        msg.appendChild(table);
+        table.appendChild(tbody);
+
+
+        var address;
+        window.onload = function () {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // document.getElementById('msg').textContent = JSON.parse(this.responseText);
+                    address = JSON.parse(this.responseText);
+                    let zip_code = [];
+                    // for(var item of address){
+                    //     zip_code.push({City:item.CityName})
+
+                    // }
+                    // address.forEach(element => {
+                    //     let obj = { City: element.CityName, Districts: [] };
+                    //     obj.City = element.CityName;
+                    // });
+
+                    // console.log(obj);
+
+                    address.forEach(element => {
+                        let _city = element.CityName;
+                        let _districts = [];
+                        element.AreaList.forEach(item => {
+                            _districts.push({ District: item.AreaName, Zipcode: item.ZipCode })
+                        });
+
+                        let _cityObject = { City: _city, Districts: _districts };
+                        zip_code.push(_cityObject);
+                    });
+
+                    zip_code.forEach(element => {
+                        // debugger;
+                        addTbody(Object.values(element));
+                    });
+
+                }
+                else {
+                    msg.textContent = `發生錯誤，HTTP responce代碼: ${xhr.status}`;
+                }
+            }
+            xhr.open("GET", 'TaiwanAddress.json');
+            // xhr.open("POST", 'https://...'); 也可以用這個
+            xhr.send();
+        }
+
+
+        function addTbody(rowArray) {
+            // console.log(rowArray);
+            let templateRow = document.getElementById('templateRow');
+
+            for (let i = 0; i < rowArray[1].length; i++) {
+                // debugger;
+                let cloneContent = templateRow.content.cloneNode(true);
+                let tds = cloneContent.querySelectorAll('td');
+                let s = [];
+                s.push(rowArray[0]);
+                s.push(rowArray[1][i].District);
+                s.push(rowArray[1][i].Zipcode);
+                // debugger;
+                for (let j = 0; j < s.length; j++) {
+                    tds[j].textContent = s[j];
+                }
+                tbody.appendChild(cloneContent);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
