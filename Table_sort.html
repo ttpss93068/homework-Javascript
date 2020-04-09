@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #product_table table td,
+        #product_table table th {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Apple iPad</h1>
+    <div id="product_table"></div>
+    <div id="msg">
+
+    </div>
+
+
+    <script>
+
+        var product_table = document.getElementById('product_table');
+        var table = document.createElement('table');
+        var thead = document.createElement('thead');
+        var tbody = document.createElement('tbody');
+
+        product_table.appendChild(table);
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        var reverse = false;
+
+        let ipad = '';
+        window.onload = function () {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                // document.getElementById('msg').innerHTML = this.responseText;
+                ipad = JSON.parse(this.responseText);
+
+                add_thead(ipad.products[0]);
+                add_tbody(ipad.products);
+                var th = document.querySelectorAll('th');
+                th.forEach(item => {
+                    item.onclick = function () {
+                        if(reverse == false){
+                            ipad.products.sort(function (a, b) {
+                            if (typeof a[item.innerText] == 'string' && a[item.innerText].includes('GB') == true) {
+                                
+                                let n1 = parseInt(a[item.innerText].substring(0,a[item.innerText].length-2));
+                                let n2 = parseInt(b[item.innerText].substring(0,b[item.innerText].length-2));
+                                return n1 - n2;
+                            }
+                            else if(typeof a[item.innerText] == 'string'){
+                                if (a[item.innerText] > b[item.innerText]) {
+                                    return 1;
+                                }
+                                if (a[item.innerText] < b[item.innerText]) {
+                                    return -1;
+                                }
+                                return 0;
+                            }
+                            else {
+                                return a[item.innerText] - b[item.innerText];
+                            }
+                        });
+                        _sort(ipad.products);
+                        reverse = true;
+                        } 
+                        else{
+                            ipad.products.sort(function (a, b) {
+                            if (typeof a[item.innerText] == 'string' && a[item.innerText].includes('GB') == true) {
+                                let n1 = parseInt(a[item.innerText].substring(0,a[item.innerText].length-2));
+                                let n2 = parseInt(b[item.innerText].substring(0,b[item.innerText].length-2));
+                                return n2 - n1;
+                            }
+                            else if(typeof a[item.innerText] == 'string'){
+                                
+                                if (a[item.innerText] > b[item.innerText]) {
+                                    return -1;
+                                }
+                                if (a[item.innerText] < b[item.innerText]) {
+                                    return 1;
+                                }
+                                return 0;
+                            }
+                            else {
+                                return b[item.innerText] - a[item.innerText];
+                            }
+                        });
+                        _sort(ipad.products);
+                        reverse = false;
+                        }
+                    }
+
+                })
+                
+            }
+            xhr.open("GET", "https://bs-frontend.azurewebsites.net/api/Apple/IPad");
+            xhr.send();
+        }
+
+
+        function _sort(ipad) {
+            // table.children.remove(tbody);
+            tbody.innerHTML = '';
+            // var tbody = document.createElement('tbody');
+            // table.appendChild(tbody);
+            add_tbody(ipad);
+        }
+
+
+        //有用title陣列
+        // for (var item of title) {
+        //     var th = document.createElement('th');
+        //     thead.appendChild(th);
+        //     th.innerText = item;
+        // }
+
+        // function _Sort(_click) {
+        //     var type = _click.innerHTML;
+        //     debugger;
+
+        //     var _tbody = document.getElementsByTagName('tbody')[0];
+        //     _tbody.remove(true);
+
+        //     ipad.products.sort(function (a, b) {
+        //         var boolean = a[type] < b[type] ? -1 : 1;
+        //         return boolean;
+        //     });
+
+        //     add_body(ipad.products);
+
+        // }
+
+
+        function add_thead(products) {
+            var tr = document.createElement('tr');
+            for (var item in products) {
+                var th = document.createElement('th');
+                th.innerText = item;
+                tr.appendChild(th);
+            }
+            thead.appendChild(tr);
+
+
+        }
+        // for (let i = 0; i < Object.keys(products[0]).length; i++) {
+        //     var th = document.createElement('th');
+        //     thead.appendChild(th);
+        //     th.innerText = Object.keys(products[0])[i];
+        // }
+
+
+        function add_tbody(products) {
+            for (var item of products) {
+                var tr = document.createElement('tr');
+                tbody.appendChild(tr);
+                for (let i = 0; i < Object.keys(item).length; i++) {
+                    // console.log( Object.value(item)[i] );
+                    var td = document.createElement('td');
+                    tr.appendChild(td);
+                    // td.innerText = item[Object.keys(item)[i]];
+                    td.innerText = Object.values(item)[i];
+                }
+            }
+        }
+
+
+
+
+
+        // var items = [
+        //     { name: 'Edward', value: 21 },
+        //     { name: 'Sharpe', value: 37 },
+        //     { name: 'And', value: 45 },
+        //     { name: 'The', value: -12 },
+        //     { name: 'Magnetic', value: 13 },
+        //     { name: 'Zeros', value: 37 }
+        // ];
+
+        // // sort by value
+        // items.sort(function (a, b) {
+        //     return a.value - b.value;
+        // });
+
+
+
+            // sort by name
+            // items.sort(function (a, b) {
+            //     var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            //     var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            //     if (nameA < nameB) {
+            //         return -1;
+            //     }
+            //     if (nameA > nameB) {
+            //         return 1;
+            //     }
+
+            //     // names must be equal
+            //     return 0;
+            // });
+
+
+    </script>
+
+</body>
+
+</html>
