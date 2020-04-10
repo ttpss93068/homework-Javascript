@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+    <script>
+
+        // var Mask;
+        // var position = [];
+
+        // $.ajax({
+        //     type: "Get",
+        //     url: "https://maskmap.azurewebsites.net/api/mask/getmaskstock",
+        //     success: function (response) {
+        //         Mask = JSON.parse(response);
+        //         // console.log(Mask.features.length);
+        //         for (let i = 0; i < Mask.features.length; i++) {
+        //             position.push(Mask.features[i].geometry.coordinates);
+        //         }
+        //     }
+        // })
+
+
+        // var map;
+        // function initMap() {
+        //     map = new google.maps.Map(document.getElementById('map'), {
+        //         center: { lat: 24.7538813, lng: 120.9515024 },
+        //         zoom: 16
+        //     });
+        // }
+
+
+        // var position = [
+        //     { label: 'A', lat: 25.0336962, lng: 121.5643673 },
+        //     { label: 'B', lat: 25.0333698, lng: 121.5641564 },
+        //     { label: 'C', lat: 25.033899, lng: 121.564329 },
+        //     { label: 'D', lat: 25.0338407, lng: 121.5645269 },
+        //     { label: 'E', lat: 25.0336377, lng: 121.5645727 }
+        // ];
+
+
+
+        var map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 16,
+                center: {
+                    lat: 25.0336962,
+                    lng: 121.5643673
+                }
+            });
+            // var marker = new google.maps.Marker({position: { lat: 25.0336962, lng: 121.5643673 }, map: map});
+            const url = 'https://maskmap.azurewebsites.net/api/mask/getmaskstock';
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                    // Put your code here
+
+                    data.features.forEach(item => {
+                        if (item.properties.masksLeft > 0 && item.properties.childMasksLeft > 0) {
+                            var makers = new google.maps.Marker({
+                                position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
+                                map: map,
+                                icon: 'google_map_img/medical-mask.png',
+                                title: `${item.properties.name}\n大人${item.properties.masksLeft}\n小孩${item.properties.childMasksLeft}`
+                            })
+                        }
+                        else if(item.properties.masksLeft == 0 && item.properties.childMasksLeft > 0){
+                            var makers = new google.maps.Marker({
+                                position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
+                                map: map,
+                                icon: 'google_map_img/baby.png',
+                                title: `${item.properties.name}\n大人${item.properties.masksLeft}\n小孩${item.properties.childMasksLeft}`
+                            })
+                        }
+                        else if(item.properties.masksLeft > 0 && item.properties.childMasksLeft == 0){
+                            var makers = new google.maps.Marker({
+                                position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
+                                map: map,
+                                icon: 'google_map_img/man.png',
+                                title: `${item.properties.name}\n大人${item.properties.masksLeft}\n小孩${item.properties.childMasksLeft}`
+                            })
+                        }
+                        else{
+                            var makers = new google.maps.Marker({
+                                position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
+                                map: map,
+                                icon: 'google_map_img/do-not-dry-clean.png',
+                                title: `${item.properties.name}\n大人${item.properties.masksLeft}\n小孩${item.properties.childMasksLeft}`
+
+                            })
+                        }
+                    });
+
+                })
+                .catch((error) => {
+                    // Handle the error
+                });
+            // for (var i = 0; i < position.length; i++) {
+            //     addMarker(i);
+            // }
+        }
+
+        // function addMarker(e) {
+        //     markers[e] = new google.maps.Marker({
+        //         position: {
+        //             lat: position[e].lat,
+        //             lng: position[e].lng
+        //         },
+        //         map: map,
+        //         label: position[e].label
+        //     });
+        // }
+
+
+
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlKWP4uWjQIR3WDAWLAu6rUhBfc3_ppag &callback=initMap"
+        async defer></script>
+</body>
+
+</html>
