@@ -1,166 +1,22 @@
+<!doctype html>
 <html lang="en">
-
-<head>
-    <title>Sort Table</title>
+  <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css"
-        integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
-    <style>
-        table * {
-            border: 1px black solid;
-            text-align: center;
-        }
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-        table i {
-            margin-left: 10px;
-            border: none;
-        }
-
-        table th.youCanSort:hover {
-            cursor: pointer;
-            background-color: darkgray;
-            color: darkslateblue;
-        }
-    </style>
-</head>
-
-<body>
-    <div>
-        <table class="table table-dark">
-            <thead>
-                <tr>
-                    <th class="youCanSort" onclick="Sort(this)">ID<i class="fas fa-sort"></i></th>
-                    <th class="youCanSort" onclick="Sort(this)">Price<i class="fas fa-sort"></i></th>
-                    <th class="youCanSort" onclick="Sort(this)">DisCount<i class="fas fa-sort"></i></th>
-                </tr>
-            </thead>
-            <tbody>
-
-                
-            </tbody>
-        </table>
-    </div>
-
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
-
-    <script>
-        var Products = [
-            { ID: 'C', Price: 200, DisCount: 0.9 },
-            { ID: 'B', Price: 100, DisCount: 0.9 },
-            { ID: 'A', Price: 300, DisCount: 0.8 },
-            { ID: 'F', Price: 500, DisCount: 0.5 },
-            { ID: 'G', Price: 550, DisCount: 0.8 },
-            { ID: 'Y', Price: 120, DisCount: 0.2 },
-            { ID: 'Z', Price: 420, DisCount: 0.8 },
-            { ID: 'K', Price: 50, DisCount: 0.1 }
-        ];
-
-        var tBody = document.getElementsByTagName('tbody')[0];
-
-        for (let item of Products) {
-            let tr = document.createElement('tr');
-            for (let prop in item) {
-                let td = document.createElement('td');
-                td.innerText = item[prop];
-                tr.appendChild(td);
-            }
-            tBody.appendChild(tr);
-        }
-
-        var isDesc = false;
-
-        function Sort(el) {
-            //console.log(el)
-            //console.log(isDesc);
-            //console.log(typeof(el));
-
-            //reset icon
-            let thGroup = document.getElementsByClassName('youCanSort');
-            for (let th of thGroup) {
-                th.firstElementChild.classList.remove('fa-sort-down');
-                th.firstElementChild.classList.remove('fa-sort-up');
-                th.firstElementChild.classList.remove('fa-sort');
-                th.firstElementChild.classList.add('fa-sort');
-            }
-
-            //抓到下面的icon
-            let nowIcon = el.firstElementChild;
-            //console.log(nowIcon.classList);
-
-            //用prop排序
-            let sortResult = Products.sort(function (a, b) {
-                if (!isDesc) {
-                    if (typeof (a[el.innerText]) == 'string') {
-                        if (a[el.innerText] >= b[el.innerText]) {
-                            return 1;
-                        } else {
-                            return -1;
-                        }
-                    }
-                    return a[el.innerText] - b[el.innerText];
-                } else {
-                    if (typeof (el.innerText) == 'string') {
-                        if (a[el.innerText] <= b[el.innerText]) {
-                            return 1;
-                        } else {
-                            return -1;
-                        }
-                    }
-                    return b[el.innerText] - a[el.innerText];
-                }
-            });
-
-            Products = sortResult;
-
-            //清空元素
-            tBody.innerHTML = '';
-
-            //長新的
-            for (let item of sortResult) {
-                let tr = document.createElement('tr');
-                for (let prop in item) {
-                    let td = document.createElement('td');
-                    td.innerText = item[prop];
-                    tr.appendChild(td);
-                }
-                tBody.appendChild(tr);
-            }
-
-            //let test = document.getElementById('t').classList.remove
-
-            if (isDesc) {
-                isDesc = false;
-                nowIcon.classList.remove('fa-sort');
-                nowIcon.classList.remove('fa-sort-down');
-                nowIcon.classList.add('fa-sort-up');
-            } else {
-                isDesc = true;
-                nowIcon.classList.remove('fa-sort');
-                nowIcon.classList.remove('fa-sort-up');
-                nowIcon.classList.add('fa-sort-down');
-            }
-        }
-    </script>
-
-
-
-</body>
-
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
 </html>
