@@ -78,7 +78,7 @@
                     msg.textContent = `發生錯誤，HTTP responce代碼: ${xhr.status}`;
                 }
             }
-            xhr.open("GET", 'TaiwanAddress.json');
+            xhr.open("GET", 'https://raw.githubusercontent.com/ttpss93068/homework-Javascript/master/TaiwanAddress.json');
             // xhr.open("POST", 'https://...'); 也可以用這個
             xhr.send();
         }

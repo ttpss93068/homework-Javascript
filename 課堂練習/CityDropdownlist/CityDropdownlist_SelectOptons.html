@@ -1,29 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
 
-    <select name="cities" id="cities">
+    <select name="cities" id="cities" onchange="select(this.selectedIndex)">
         <option value="">---請選擇縣市---</option>
-        <option value="taipei">台北</option>
+        <!-- <option value="taipei">台北</option>
         <option value="taoyuan">桃園</option>
-        <option value="taichung">台中</option>
+        <option value="taichung">台中</option> -->
     </select>
 
     <select name="district" id="district">
         <option value="">---請選擇行政區---</option>
-        <option value="taipei01">中正區</option>
+        <!-- <option value="taipei01">中正區</option>
         <option value="taipei02">萬華區</option>
-        <option value="taipei03">信義區</option>
+        <option value="taipei03">信義區</option> -->
     </select>
 
+    <div id="msg"></div>
+
+    <button onclick="submitData()">submit提交資料</button>
+
+
     <script>
-        
+
+        var cities = document.getElementById('cities');
+        var district = document.getElementById('district');
+        var cityjson;
+        // cities.add(option2, 0);
+        // let opt0 = document.createElement('option');
+
+        fetch("https://raw.githubusercontent.com/ttpss93068/homework-Javascript/master/%E8%AA%B2%E5%A0%82%E7%B7%B4%E7%BF%92/taiwan_address.js")
+            .then((response) => response.json())
+            .then((text) => {
+                // debugger;
+                cityjson = text;
+                for (let i = 0; i < text.length; i++) {
+                    let option1 = document.createElement('option');
+                    option1.value = i;
+                    option1.text = text[i].City;
+                    cities.add(option1, null);
+                    // for (let j = 0; j < text[i].Districts.length; j++) {
+                    //     let option2 = document.createElement('option');
+                    //     option2.value = j;
+                    //     option2.text = text[i].Districts[j].District;
+                    //     option2.setAttribute('selected', text[i].City);
+                    //     district.add(option2);
+                    //     // debugger;
+                    // }
+                }
+
+
+                // Put your code here
+            })
+            .catch((ex) => {
+                // Handle the error
+
+            });
+
+        function select(Index) {
+            // console.log(cityjson)
+            // selectedCityValue=cityjson[0].City;
+            // selectedCityText =cityjson[0].Districts[0].District;
+            district.textContent = '';
+            // district.innerHTML = '---請選擇行政區---';
+            for (let j = 0; j < cityjson[Index - 1].Districts.length; j++) {
+                let option2 = document.createElement('option');
+                option2.value = j;
+                option2.text = cityjson[Index - 1].Districts[j].District;
+                district.add(option2);
+            }
+        }
+
+        districtSelect.addEventListener('change', function(){
+            document.getElementById("#msg").textContent = citySelect.selectedOptions[0].text + "," + districtSelect.selectedOptions[0].text;
+        });
+
+        function submitData(){
+            let formData = new FormData();
+            formData.append("City", citySelect.selectedOptions[0].text);
+            formData.append("District", districtSelect.selectedOptions[0].text);
+            
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://www.codemagic.com.tw");
+            xhr.send(formData);
+        }
+
+
+
+
+
     </script>
-    
+
 </body>
+
 </html>
