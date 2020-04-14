@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/課堂練習/CityDropdownlist/MyHelper.js"></script>
+</head>
+
+<body>
+
+    <!-- select 1 -->
+    <select id='cities' name='cities'>
+
+    </select>
+    <!-- select 2 -->
+    <select id="district" name="district">
+
+    </select>
+
+    <button onclick="submitData()">Submit提交資料</button>
+
+    <div id="msg"></div>
+
+
+    <!-- select 1 -->
+    <!--     <select id='cities' name='cities'>
+        <option value="">---請選擇縣市---</option>
+        <option value="taipei">台北</option>
+        <option value="taoyuan">桃園</option>
+        <option value="taichung">台中</option>
+    </select> -->
+
+    <!-- select 2 -->
+    <!--     <select id="district" name="district">
+        <option value="">---請選擇行政區---</option>
+        <option value="taipei01">中正區</option>
+        <option value="taipei02">萬華區</option>
+        <option value="taipei03">信義區</option>
+    </select> -->
+
+
+    <script>
+
+        let zipcodeArray = [];
+        let citySelect = $g("#cities");
+        let districtSelect = $g("#district");
+        function GetAddressJSON() {
+            fetch("https://raw.githubusercontent.com/apprunner/FileStorage/master/TaiwanAddress_Simple.json")
+                .then(response => response.text())
+                .then(text => {
+                    // debugger;
+                    zipcodeArray = JSON.parse(text);
+
+                    zipcodeArray.forEach((item, index) => {
+                        //Select1
+                        let option1 = $c('option');
+                        option1.value = index;
+                        option1.text = zipcodeArray[index].City;
+                        citySelect.add(option1, null);
+                    });
+
+                    let option2 = $c('option');
+                    option2.value = -1;
+                    option2.text = "---請選擇縣市---";
+                    option2.setAttribute('selected', '');
+                    citySelect.add(option2, 0);
+
+                    //Select2
+                    let opt0 = $c('option');
+                    opt0.value = -1;
+                    opt0.text = "---請選擇縣行政區---";
+                    districtSelect.add(opt0, null);
+                    debugger;
+                })
+                .catch(ex => {
+                    console.log("錯誤訊息:" + ex);
+                })
+        }
+
+        window.onload = GetAddressJSON;
+
+        citySelect.onchange = citySelectChange;
+
+        function citySelectChange(event) {
+            console.log(citySelect.selectedOptions[0]);
+            selectedCityValue = citySelect.selectedOptions[0].value;
+            selectedCityText = citySelect.selectedOptions[0].text;
+
+            console.log(event.target);
+            // debugger;
+
+            let districtArray = zipcodeArray.find(c => c.City == selectedCityText).Districts;
+            console.log(districtArray);
+
+            districtSelect.innerHTML = "";
+            let opt0 = $c('option');
+            opt0.value = -1;
+            opt0.text = "---請選擇縣行政區---";
+            districtSelect.add(opt0, null);
+
+            districtArray.forEach((item, index) => {
+                let option1 = $c('option');
+                option1.value = districtArray[index].ZipCode;
+                option1.text = districtArray[index].District;
+                districtSelect.add(option1, null);
+            });
+        }
+
+        districtSelect.addEventListener('change', function(){
+            $g("#msg").textContent = citySelect.selectedOptions[0].text + "," + districtSelect.selectedOptions[0].text;
+        });
+
+        function submitData(){
+            let formData = new FormData();
+            formData.append("City", citySelect.selectedOptions[0].text);
+            formData.append("District",districtSelect.selectedOptions[0].text);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://www.codemagic.com.tw");
+            xhr.send(formData);
+        }
+    </script>
+</body>
+
+</html>

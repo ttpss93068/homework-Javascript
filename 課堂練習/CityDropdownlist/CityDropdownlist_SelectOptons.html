@@ -23,9 +23,11 @@
         <option value="taipei03">信義區</option> -->
     </select>
 
+    <button onclick="submitData()">submit提交資料</button>
+
     <div id="msg"></div>
 
-    <button onclick="submitData()">submit提交資料</button>
+    
 
 
     <script>
@@ -46,6 +48,7 @@
                     option1.value = i;
                     option1.text = text[i].City;
                     cities.add(option1, null);
+                    // debugger;
                     // for (let j = 0; j < text[i].Districts.length; j++) {
                     //     let option2 = document.createElement('option');
                     //     option2.value = j;
@@ -68,8 +71,16 @@
             // console.log(cityjson)
             // selectedCityValue=cityjson[0].City;
             // selectedCityText =cityjson[0].Districts[0].District;
-            district.textContent = '';
-            // district.innerHTML = '---請選擇行政區---';
+            // district.textContent = '';
+            
+            district.innerHTML = '';
+            // debugger;
+            let _option = document.createElement('option');
+            _option.innerHTML = '---請選擇行政區---';
+            _option.value = '';
+            district.add(_option,0);
+            // debugger;
+            // district.textContent = '---請選擇行政區---';
             for (let j = 0; j < cityjson[Index - 1].Districts.length; j++) {
                 let option2 = document.createElement('option');
                 option2.value = j;
@@ -78,14 +89,14 @@
             }
         }
 
-        districtSelect.addEventListener('change', function(){
-            document.getElementById("#msg").textContent = citySelect.selectedOptions[0].text + "," + districtSelect.selectedOptions[0].text;
+        district.addEventListener('change', function(){
+            document.getElementById("msg").textContent = cities.selectedOptions[0].text + "," + district.selectedOptions[0].text;
         });
 
         function submitData(){
             let formData = new FormData();
-            formData.append("City", citySelect.selectedOptions[0].text);
-            formData.append("District", districtSelect.selectedOptions[0].text);
+            formData.append("City", cities.selectedOptions[0].text);
+            formData.append("District", district.selectedOptions[0].text);
             
             let xhr = new XMLHttpRequest();
             xhr.open("POST", "https://www.codemagic.com.tw");
