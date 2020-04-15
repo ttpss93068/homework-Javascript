@@ -20,11 +20,28 @@
             height: 100%;
             margin: 0;
             padding: 0;
+            /* display: flex; */
+        }
+        #btn_sear button{
+            padding: 10px;
+        }
+        #btn_sear button:hover{
+            background-color: coral;
         }
     </style>
 </head>
 
 <body>
+    <div id="search">
+        <div class="con">
+            <label for="">輸入地區或藥局名稱:</label>
+            <input type="text" value="">
+            <button form="input" id="btn_search">確認</button>
+        </div>
+        <div id="btn_sear">
+            
+        </div>
+    </div>
 
     <div id="map"></div>
     <script>
@@ -65,6 +82,9 @@
 
 
         var map;
+        var data_map;
+        var country = ['新北市', '臺北市', '桃園市', '基隆市', '新竹市', '宜蘭縣', '新竹縣', '臺中市', '苗栗縣', '彰化縣', '南投縣', '雲林縣', '臺南市', '高雄市',
+            '嘉義市', '臺東縣', '花蓮縣', '澎湖縣', '金門縣', '連江縣'];
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16,
@@ -73,56 +93,69 @@
                     lng: 121.5643673
                 }
             });
+
             // var marker = new google.maps.Marker({position: { lat: 25.0336962, lng: 121.5643673 }, map: map});
-            const url = 'https://maskmap.azurewebsites.net/api/mask/getmaskstock';
+            // const url = 'https://maskmap.azurewebsites.net/api/mask/getmaskstock';
+            const url = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json';
             fetch(url)
                 .then((response) => response.json())
                 .then((data) => {
+                    data_map = data;
                     // Put your code here
-
                     data.features.forEach(item => {
-                        if (item.properties.masksLeft > 0 && item.properties.childMasksLeft > 0) {
+                        // debugger;
+
+                        if (item.properties.mask_adult > 0 && item.properties.mask_child > 0) {
                             var makers = new google.maps.Marker({
                                 position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
                                 map: map,
                                 icon: 'google_map_img/medical-mask.png',
-                                title: `${item.properties.name}\n大人${item.properties.masksLeft}\n小孩${item.properties.childMasksLeft}`
+                                title: `${item.properties.name}\n大人${item.properties.mask_adult}\n小孩${item.properties.mask_child}`
                             })
                         }
-                        else if(item.properties.masksLeft == 0 && item.properties.childMasksLeft > 0){
+                        else if (item.properties.mask_adult == 0 && item.properties.mask_child > 0) {
                             var makers = new google.maps.Marker({
                                 position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
                                 map: map,
                                 icon: 'google_map_img/baby.png',
-                                title: `${item.properties.name}\n大人${item.properties.masksLeft}\n小孩${item.properties.childMasksLeft}`
+                                title: `${item.properties.name}\n大人${item.properties.mask_adult}\n小孩${item.properties.mask_child}`
                             })
                         }
-                        else if(item.properties.masksLeft > 0 && item.properties.childMasksLeft == 0){
+                        else if (item.properties.mask_adult > 0 && item.properties.mask_child == 0) {
                             var makers = new google.maps.Marker({
                                 position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
                                 map: map,
                                 icon: 'google_map_img/man.png',
-                                title: `${item.properties.name}\n大人${item.properties.masksLeft}\n小孩${item.properties.childMasksLeft}`
+                                title: `${item.properties.name}\n大人${item.properties.mask_adult}\n小孩${item.properties.mask_child}`
                             })
                         }
-                        else{
+                        else {
                             var makers = new google.maps.Marker({
                                 position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
                                 map: map,
                                 icon: 'google_map_img/do-not-dry-clean.png',
-                                title: `${item.properties.name}\n大人${item.properties.masksLeft}\n小孩${item.properties.childMasksLeft}`
+                                title: `${item.properties.name}\n大人${item.properties.mask_adult}\n小孩${item.properties.mask_child}`
 
                             })
                         }
+                        // var contentString = `<div id="content">` +
+                        //     `<div id="siteNotice">` +
+                        //     `</div>` +
+                        //     `<h1 id="firstHeading" class="h1">藥局名稱:${item.properties.name}</h1>` +
+                        //     `<h3 class="h3">藥局電話:${item.properties.phone}<h3>` +
+                        //     `<h3 class="h3">藥局地址:${item.properties.address}<h3>` +
+                        //     `<h3 class="h3">備註:${item.properties.note}<h3>` +
+                        //     `<h2 class="h2">成人口罩:${item.properties.mask_adult}個<h2>` +
+                        //     `<h2 class="h2">兒童口罩:${item.properties.mask_child}個<h2>` +
+                        //     `</div>`;
+                        // let infowindow = new google.maps.InfoWindow({
+                        //     content: contentString
+                        // });
                     });
-
                 })
                 .catch((error) => {
                     // Handle the error
                 });
-            // for (var i = 0; i < position.length; i++) {
-            //     addMarker(i);
-            // }
         }
 
         // function addMarker(e) {
@@ -136,6 +169,23 @@
         //     });
         // }
 
+        var btn_sear = document.getElementById('btn_sear');
+        country.forEach(item => {
+            var button = document.createElement('button');
+            button.innerText = item;
+            button.setAttribute('class','btn_country');
+            btn_sear.appendChild(button);
+        });
+
+        var btn_country = document.querySelectorAll('.btn_country');
+        
+        btn_country.forEach(item => {
+            item.addEventListener('click', find_District);
+        });
+
+        function find_District(){
+            
+        }
 
 
 
