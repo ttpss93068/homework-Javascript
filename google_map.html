@@ -22,10 +22,12 @@
             padding: 0;
             /* display: flex; */
         }
-        #btn_sear button{
+
+        #btn_sear button {
             padding: 10px;
         }
-        #btn_sear button:hover{
+
+        #btn_sear button:hover {
             background-color: coral;
         }
     </style>
@@ -35,51 +37,16 @@
     <div id="search">
         <div class="con">
             <label for="">輸入地區或藥局名稱:</label>
-            <input type="text" value="">
+            <input type="text" value="" id="input">
             <button form="input" id="btn_search">確認</button>
         </div>
         <div id="btn_sear">
-            
+
         </div>
     </div>
 
     <div id="map"></div>
     <script>
-
-        // var Mask;
-        // var position = [];
-
-        // $.ajax({
-        //     type: "Get",
-        //     url: "https://maskmap.azurewebsites.net/api/mask/getmaskstock",
-        //     success: function (response) {
-        //         Mask = JSON.parse(response);
-        //         // console.log(Mask.features.length);
-        //         for (let i = 0; i < Mask.features.length; i++) {
-        //             position.push(Mask.features[i].geometry.coordinates);
-        //         }
-        //     }
-        // })
-
-
-        // var map;
-        // function initMap() {
-        //     map = new google.maps.Map(document.getElementById('map'), {
-        //         center: { lat: 24.7538813, lng: 120.9515024 },
-        //         zoom: 16
-        //     });
-        // }
-
-
-        // var position = [
-        //     { label: 'A', lat: 25.0336962, lng: 121.5643673 },
-        //     { label: 'B', lat: 25.0333698, lng: 121.5641564 },
-        //     { label: 'C', lat: 25.033899, lng: 121.564329 },
-        //     { label: 'D', lat: 25.0338407, lng: 121.5645269 },
-        //     { label: 'E', lat: 25.0336377, lng: 121.5645727 }
-        // ];
-
-
 
         var map;
         var data_map;
@@ -87,10 +54,10 @@
             '嘉義市', '臺東縣', '花蓮縣', '澎湖縣', '金門縣', '連江縣'];
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 16,
+                zoom: 7,
                 center: {
-                    lat: 25.0336962,
-                    lng: 121.5643673
+                    lat: 23.7891864,
+                    lng: 120.2602397
                 }
             });
 
@@ -103,7 +70,6 @@
                     data_map = data;
                     // Put your code here
                     data.features.forEach(item => {
-                        // debugger;
 
                         if (item.properties.mask_adult > 0 && item.properties.mask_child > 0) {
                             var makers = new google.maps.Marker({
@@ -138,19 +104,6 @@
 
                             })
                         }
-                        // var contentString = `<div id="content">` +
-                        //     `<div id="siteNotice">` +
-                        //     `</div>` +
-                        //     `<h1 id="firstHeading" class="h1">藥局名稱:${item.properties.name}</h1>` +
-                        //     `<h3 class="h3">藥局電話:${item.properties.phone}<h3>` +
-                        //     `<h3 class="h3">藥局地址:${item.properties.address}<h3>` +
-                        //     `<h3 class="h3">備註:${item.properties.note}<h3>` +
-                        //     `<h2 class="h2">成人口罩:${item.properties.mask_adult}個<h2>` +
-                        //     `<h2 class="h2">兒童口罩:${item.properties.mask_child}個<h2>` +
-                        //     `</div>`;
-                        // let infowindow = new google.maps.InfoWindow({
-                        //     content: contentString
-                        // });
                     });
                 })
                 .catch((error) => {
@@ -158,34 +111,119 @@
                 });
         }
 
-        // function addMarker(e) {
-        //     markers[e] = new google.maps.Marker({
-        //         position: {
-        //             lat: position[e].lat,
-        //             lng: position[e].lng
-        //         },
-        //         map: map,
-        //         label: position[e].label
-        //     });
-        // }
 
         var btn_sear = document.getElementById('btn_sear');
         country.forEach(item => {
             var button = document.createElement('button');
             button.innerText = item;
-            button.setAttribute('class','btn_country');
+            button.setAttribute('class', 'btn_country');
             btn_sear.appendChild(button);
         });
 
         var btn_country = document.querySelectorAll('.btn_country');
-        
+
+        //會去找所按縣市的行政區所有的口罩資訊
         btn_country.forEach(item => {
-            item.addEventListener('click', find_District);
+            item.onclick = function () {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 7,
+                    center: {
+                        lat: 23.7891864,
+                        lng: 120.2602397
+                    }
+                });
+                data_map.features.forEach(element => {
+                    if (element.properties.county == item.textContent) {
+                        if (element.properties.mask_adult > 0 && element.properties.mask_child > 0) {
+                            var makers = new google.maps.Marker({
+                                position: { lat: element.geometry.coordinates[1], lng: element.geometry.coordinates[0] },
+                                map: map,
+                                icon: 'google_map_img/medical-mask.png',
+                                title: `${element.properties.name}\n大人${element.properties.mask_adult}\n小孩${element.properties.mask_child}`
+                            })
+                        }
+                        else if (element.properties.mask_adult == 0 && element.properties.mask_child > 0) {
+                            var makers = new google.maps.Marker({
+                                position: { lat: element.geometry.coordinates[1], lng: element.geometry.coordinates[0] },
+                                map: map,
+                                icon: 'google_map_img/baby.png',
+                                title: `${element.properties.name}\n大人${element.properties.mask_adult}\n小孩${element.properties.mask_child}`
+                            })
+                        }
+                        else if (element.properties.mask_adult > 0 && element.properties.mask_child == 0) {
+                            var makers = new google.maps.Marker({
+                                position: { lat: element.geometry.coordinates[1], lng: element.geometry.coordinates[0] },
+                                map: map,
+                                icon: 'google_map_img/man.png',
+                                title: `${element.properties.name}\n大人${element.properties.mask_adult}\n小孩${element.properties.mask_child}`
+                            })
+                        }
+                        else {
+                            var makers = new google.maps.Marker({
+                                position: { lat: element.geometry.coordinates[1], lng: element.geometry.coordinates[0] },
+                                map: map,
+                                icon: 'google_map_img/do-not-dry-clean.png',
+                                title: `${element.properties.name}\n大人${element.properties.mask_adult}\n小孩${element.properties.mask_child}`
+
+                            })
+                        }
+                    }
+                })
+            }
+
+            // item.addEventListener('click', find_District);
         });
 
-        function find_District(){   
-        }
 
+        //用搜尋去,定位行政區跟藥局
+        var input = document.querySelector('#input');
+        var btn_search = document.getElementById('btn_search');
+        btn_search.onclick = function () {
+            data_map.features.forEach(item => {
+                if (item.properties.name.includes(input.value) || item.properties.town.includes(input.value)) {
+                    map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 18,
+                        center: {
+                            lat: item.geometry.coordinates[1],
+                            lng: item.geometry.coordinates[0]
+                        }
+                    });
+                    if (item.properties.mask_adult > 0 && item.properties.mask_child > 0) {
+                        var makers = new google.maps.Marker({
+                            position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
+                            map: map,
+                            icon: 'google_map_img/medical-mask.png',
+                            title: `${item.properties.name}\n大人${item.properties.mask_adult}\n小孩${item.properties.mask_child}`
+                        })
+                    }
+                    else if (item.properties.mask_adult == 0 && item.properties.mask_child > 0) {
+                        var makers = new google.maps.Marker({
+                            position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
+                            map: map,
+                            icon: 'google_map_img/baby.png',
+                            title: `${item.properties.name}\n大人${item.properties.mask_adult}\n小孩${item.properties.mask_child}`
+                        })
+                    }
+                    else if (item.properties.mask_adult > 0 && item.properties.mask_child == 0) {
+                        var makers = new google.maps.Marker({
+                            position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
+                            map: map,
+                            icon: 'google_map_img/man.png',
+                            title: `${item.properties.name}\n大人${item.properties.mask_adult}\n小孩${item.properties.mask_child}`
+                        })
+                    }
+                    else {
+                        var makers = new google.maps.Marker({
+                            position: { lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0] },
+                            map: map,
+                            icon: 'google_map_img/do-not-dry-clean.png',
+                            title: `${item.properties.name}\n大人${item.properties.mask_adult}\n小孩${item.properties.mask_child}`
+
+                        })
+                    }
+                }
+            })
+        }
 
 
     </script>
