@@ -1,0 +1,45 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    text-align: center;
+    /* flex-direction: column; */
+    padding-top: 8%;
+    background-color: coral;
+}
+
+#container {
+    width: 500px;
+    height: 500px;
+    background: #E4FDE1;
+    margin: auto;
+}
+ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none; /* 把li的樣式拿掉 */
+    /* justify-content: space-evenly; 均匀排列每个元素
+    每个元素之间的间隔相等 */
+    /* font-family: 'Audiowide'; */
+    color: #E4FDE1; 
+    padding: 23px 0 0 40px;
+}
+ul li {
+    background: #456990;
+    width: 30%;
+    height: 150px;
+    border: 1px solid black;
+    /* margin-top: 5px; */
+    text-align: center;
+    font-size: 2rem;
+    padding-top: 3rem;
+}
+
+.empty {
+    background: white;
+    border: 2px solid #114B5F;
+}
