@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+    <style>
+        table {
+            margin-top: 20px;
+        }
+
+        thead th,
+        td {
+            text-align: center;
+            padding: 20px 50px;
+            border: 1px solid black;
+        }
+
+        .button_modules {
+            display: flex;
+            justify-content: space-evenly;
+        }
+        .button_modules{
+            margin-top: 20px;
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container button_modules">
+        <button class="btn btn-primary" onclick="minus_month()">Previous</button>
+        <h1></h1>
+        <button class="btn btn-primary" onclick="add_month()">Next</button>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <table id='table' class="col-12">
+                <thead>
+                    <tr>
+                        <th>SUN</th>
+                        <th>MON</th>
+                        <th>TUE</th>
+                        <th>WED</th>
+                        <th>THU</th>
+                        <th>FRI</th>
+                        <th>SAT</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody1">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">新增待辦項目</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="d-flex">
+                    <label for="" class="mx-2">標題:</label>
+                    <input type="text" id="title" class="d-block">
+                </div>
+                <div class="d-block">
+                    <label for="" class="mx-2">內容:</label>
+                    <textarea name="" id="textarea" cols="30" rows="4" class="d-block mx-2"></textarea>
+                    <!-- <input type="text" id="title" class="d-block"> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_change()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var td_mark;
+        var now_date = new Date();
+        var year = now_date.getFullYear();
+        var month = now_date.getMonth();
+        function init() {
+            var tbody = document.querySelector('.tbody1');
+            tbody.innerHTML = '';
+            var day = 1;
+            var first_day_week = new Date(year, month, 1).getDay();
+            var dayofmonth = new Date(year, month + 1, 0).getDate();
+            // var rows = Math.ceil(dayofmonth / 7);
+            document.querySelector('h1').innerText = `${year}年${month + 1}月`
+            for (let row = 0; row < 5; row++) {
+                let tr = document.createElement('tr');
+                for (let col = 0; col < 7; col++) {
+                    let td = document.createElement('td');
+                    if (row == 0 && col < first_day_week) {
+
+                    }
+                    else {
+                        if (day <= dayofmonth) {
+                            td.innerHTML = day;
+                            day++;
+                            td.onclick = function () {
+                                $('#exampleModal').modal('show');
+                                td_mark = this.innerText;
+                            }
+                        }
+                    }
+                    tr.append(td);
+                }
+                tbody.append(tr);
+            }
+        }
+        init();
+
+        function save_change() {
+            var title = document.getElementById('title').value;
+            var text = document.getElementById('textarea').value;
+            var tds = document.querySelectorAll('td');
+            tds.forEach(item => {
+                if(item.innerText == td_mark){
+                    var ul = document.createElement('ul');
+                    var li = document.createElement('li');
+                    li.setAttribute('style', 'font-size: 12px');
+                    li.innerText = `${title}--${text}`;
+                    ul.appendChild(li);
+                    item.appendChild(ul);
+                }
+            })
+        }
+
+        function add_month() {
+            month++;
+            if (month > 11) {
+                year++;
+                month = 0;
+            }
+            init();
+        }
+        function minus_month() {
+            month--;
+            if (month < 0) {
+                year--;
+                month = 11;
+            }
+            init();
+        }
+
+
+
+
+
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
