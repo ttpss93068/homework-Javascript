@@ -16,7 +16,12 @@
             margin-top: 20px;
         }
 
-        thead th,
+        thead th {
+            text-align: center;
+            padding: 20px 50px;
+            border: 1px solid black;
+        }
+
         td {
             text-align: center;
             padding: 20px 50px;
@@ -27,9 +32,20 @@
             display: flex;
             justify-content: space-evenly;
         }
-        .button_modules{
+
+        .button_modules {
             margin-top: 20px;
 
+        }
+
+        .modal_body div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal_body p {
+            padding: 15px 10px 0 0;
         }
     </style>
 </head>
@@ -75,6 +91,10 @@
                     </button>
                 </div>
 
+                <div class="modal_body">
+
+                </div>
+
                 <div class="d-flex">
                     <label for="" class="mx-2">標題:</label>
                     <input type="text" id="title" class="d-block">
@@ -85,8 +105,8 @@
                     <!-- <input type="text" id="title" class="d-block"> -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="save_change()">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_change()">Save</button>
                 </div>
             </div>
         </div>
@@ -94,19 +114,23 @@
 
     <script>
 
+        // var storage = window.localStorage;
+        var test_thing = [0];
+        var thing_;
         var td_mark;
         var now_date = new Date();
         var year = now_date.getFullYear();
         var month = now_date.getMonth();
+        var Calendar_day;
         function init() {
-            var tbody = document.querySelector('.tbody1');
+            let tbody = document.querySelector('.tbody1');
             tbody.innerHTML = '';
-            var day = 1;
-            var first_day_week = new Date(year, month, 1).getDay();
-            var dayofmonth = new Date(year, month + 1, 0).getDate();
+            let day = 1;
+            let first_day_week = new Date(year, month, 1).getDay();
+            let dayofmonth = new Date(year, month + 1, 0).getDate();
             // var rows = Math.ceil(dayofmonth / 7);
             document.querySelector('h1').innerText = `${year}年${month + 1}月`
-            for (let row = 0; row < 5; row++) {
+            for (let row = 0; row < 6; row++) {
                 let tr = document.createElement('tr');
                 for (let col = 0; col < 7; col++) {
                     let td = document.createElement('td');
@@ -116,10 +140,46 @@
                     else {
                         if (day <= dayofmonth) {
                             td.innerHTML = day;
+                            td.setAttribute('id', day);
                             day++;
                             td.onclick = function () {
                                 $('#exampleModal').modal('show');
-                                td_mark = this.innerText;
+                                td_mark = td.getAttribute('id');
+                                let modal_body = document.getElementsByClassName('modal_body')[0];
+                                modal_body.innerHTML = '';
+                                for (let i = 0; i < 30; i++) {
+                                    if (localStorage.getItem(`${year}.${month}.${td_mark}.${i}`) != null) {
+                                        let div = document.createElement('div');
+                                        let p = document.createElement('p');
+                                        let button = document.createElement('button');
+                                        p.innerHTML = `${i + 1} : ${localStorage.getItem(`${year}.${month}.${td_mark}.${i}`)}`;
+                                        button.innerHTML = '清除';
+                                        p.setAttribute('id', i);
+                                        button.setAttribute('id', i);
+                                        button.onclick = function () {
+                                            if (p.getAttribute('id') == button.getAttribute('id')) {
+                                                div.removeChild(p);
+                                                div.removeChild(button);
+                                                modal_body.removeChild(div);
+                                                localStorage.removeItem(`${year}.${month}.${td_mark}.${p.getAttribute('id')}`);
+                                                td.innerText = '';
+                                                let p2 = document.createElement('p');
+                                                p2.innerHTML = td_mark;
+                                                td.appendChild(p2);
+                                                for (let i = 0; i < 30; i++) {
+                                                    if (localStorage.getItem(`${year}.${month}.${td_mark}.${i}`) != null) {
+                                                        let p3 = document.createElement('p');
+                                                        p3.innerHTML = localStorage.getItem(`${year}.${month}.${td_mark}.${i}`);
+                                                        td.appendChild(p3);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        div.appendChild(p);
+                                        div.appendChild(button);
+                                        modal_body.appendChild(div);
+                                    }
+                                }
                             }
                         }
                     }
@@ -131,20 +191,61 @@
         init();
 
         function save_change() {
-            var title = document.getElementById('title').value;
-            var text = document.getElementById('textarea').value;
-            var tds = document.querySelectorAll('td');
+            let title = document.getElementById('title').value;
+            let text = document.getElementById('textarea').value;
+            let tds = document.querySelectorAll('td');
+            let modal_body = document.getElementsByClassName('modal_body')[0];
+            // debugger;
             tds.forEach(item => {
-                if(item.innerText == td_mark){
-                    var ul = document.createElement('ul');
-                    var li = document.createElement('li');
-                    li.setAttribute('style', 'font-size: 12px');
-                    li.innerText = `${title}--${text}`;
-                    ul.appendChild(li);
-                    item.appendChild(ul);
+                if (item.getAttribute('id') == td_mark) {
+                    thing_ = test_thing[test_thing.length - 1];
+                    localStorage.setItem(`${year}.${month}.${td_mark}.${thing_}`, `${title}-${text}`);
+                    let p1 = document.createElement('p');
+                    // p.setAttribute('style', 'font-size: 10px');
+                    p1.innerText = `${title}-${text}`;
+                    item.appendChild(p1);
+                    // debugger;
+
+                    let div = document.createElement('div');
+                    let p = document.createElement('p');
+                    let button = document.createElement('button');
+                    p.innerHTML = `${thing_ + 1} : ${title}-${text}`;
+                    button.innerHTML = '清除';
+                    // p.setAttribute('style', 'font-size: 10px');
+                    p.setAttribute('id', thing_);
+                    button.setAttribute('id', thing_);
+                    button.onclick = function () {
+                        if (p.getAttribute('id') == button.getAttribute('id')) {
+                            div.removeChild(p);
+                            div.removeChild(button);
+                            modal_body.removeChild(div);
+                            localStorage.removeItem(`${year}.${month}.${td_mark}.${p.getAttribute('id')}`);
+                            item.innerText = '';
+                            let p2 = document.createElement('p');
+                            p2.innerHTML = td_mark;
+                            item.appendChild(p2);
+                            debugger;
+                            for (let i = 0; i < 30; i++) {
+                                if (localStorage.getItem(`${year}.${month}.${td_mark}.${i}`) != null) {
+                                    let p3 = document.createElement('p');
+                                    p3.innerHTML = localStorage.getItem(`${year}.${month}.${td_mark}.${i}`);
+                                    item.appendChild(p3);
+                                }
+                            }
+                        }
+                    }
+                    div.appendChild(p);
+                    div.appendChild(button);
+                    modal_body.appendChild(div);
                 }
             })
+            test_thing.push(test_thing[test_thing.length - 1] + 1);
+            title.value = null;
+            text.value = null;
+            // document.cookie = test_thing[test_thing.length - 1] + 1;
         }
+
+
 
         function add_month() {
             month++;
@@ -153,7 +254,20 @@
                 month = 0;
             }
             init();
+            var tds = document.querySelectorAll('td');
+            tds.forEach(item => {
+                for (let i = 0; i < 30; i++) {
+                    if (localStorage.getItem(`${year}.${month}.${td_mark}.${i}`) != null) {
+                        if (td_mark == item.getAttribute('id')) {
+                            let p3 = document.createElement('p');
+                            p3.innerHTML = localStorage.getItem(`${year}.${month}.${td_mark}.${i}`);
+                            item.appendChild(p3);
+                        }
+                    }
+                }
+            })
         }
+
         function minus_month() {
             month--;
             if (month < 0) {
@@ -161,10 +275,19 @@
                 month = 11;
             }
             init();
+            var tds = document.querySelectorAll('td');
+            tds.forEach(item => {
+                for (let i = 0; i < 30; i++) {
+                    if (localStorage.getItem(`${year}.${month}.${td_mark}.${i}`) != null) {
+                        if (td_mark == item.getAttribute('id')) {
+                            let p3 = document.createElement('p');
+                            p3.innerHTML = localStorage.getItem(`${year}.${month}.${td_mark}.${i}`);
+                            item.appendChild(p3);
+                        }
+                    }
+                }
+            })
         }
-
-
-
 
 
     </script>
